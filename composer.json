@@ -1,12 +1,12 @@
 {
-  "name": "mahankals/package-name",
-  "version": "1.0.0",
+  "name": "mahankals/plugin-manager",
+  "version": "dev-main",
   "description": "package-description",
   "keywords": [
     "cakephp",
     "plugin"
   ],
-  "type": "cakephp-plugin",
+  "type": "composer-plugin",
   "license": "MIT",
   "authors": [
     {
@@ -15,16 +15,17 @@
     }
   ],
   "require": {
-    "php": ">=8.1",
-    "cakephp/cakephp": "5.1.*"
+    "composer-plugin-api": "^2.0",
+    "cakephp/cakephp": "5.2.*"
   },
   "autoload": {
     "psr-4": {
-      "package-title\\": "src/"
+      "PluginManager\\": "src/"
     }
   },
   "extra": {
-      "cakephp-plugin": true
+    "cakephp-plugin": true,
+    "class": "PluginManager\\ComposerPlugin"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

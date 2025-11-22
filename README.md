@@ -1,29 +1,28 @@
 <!--
 /** replace bellow details */
-{git-user}
-{git-repo}
-{git-branch}
-{Package-Title}
-{auther}
-{author-site}
-{email}
+mahankal
+cakephp-plugin_manager
+main
+PluginManager
+Atul Mahankal
+https://atulmahankal.github.io/atulmahankal/
+atulmahankal@gmail.com
 -->
 
-# {Package-Title}
+# PluginManager : Plugin for CakePHP
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Latest Version](https://img.shields.io/github/v/tag/{git-user}/{git-repo}?label=Git%20Latest)](https://github.com/{git-user}/{git-repo})
-[![Stable Version](https://img.shields.io/github/v/release/{git-user}/{git-repo}?label=Git%20Stable&sort=semver)](https://github.com/{git-user}/{git-repo}/releases)
-[![Total Downloads](https://img.shields.io/github/downloads/{git-user}/{git-repo}/total?label=Git%20Downloads)](https://github.com/{git-user}/{git-repo}/releases)
+[![Latest Version](https://img.shields.io/github/v/tag/mahankal/cakephp-plugin_manager?label=Git%20Latest)](https://github.com/mahankal/cakephp-plugin_manager)
+[![Stable Version](https://img.shields.io/github/v/release/mahankal/cakephp-plugin_manager?label=Git%20Stable&sort=semver)](https://github.com/mahankal/cakephp-plugin_manager/releases)
+[![Total Downloads](https://img.shields.io/github/downloads/mahankal/cakephp-plugin_manager/total?label=Git%20Downloads)](https://github.com/mahankal/cakephp-plugin_manager/releases)
 
-[![GitHub Stars](https://img.shields.io/github/stars/{git-user}/{git-repo}?style=social)](https://github.com/{git-user}/{git-repo}/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/{git-user}/{git-repo}?style=social)](https://github.com/{git-user}/{git-repo}/network/members)
-[![GitHub Watchers](https://img.shields.io/github/watchers/{git-user}/{git-repo}?style=social)](https://github.com/{git-user}/{git-repo}/watchers)
-
+[![GitHub Stars](https://img.shields.io/github/stars/mahankal/cakephp-plugin_manager?style=social)](https://github.com/mahankal/cakephp-plugin_manager/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/mahankal/cakephp-plugin_manager?style=social)](https://github.com/mahankal/cakephp-plugin_manager/network/members)
+[![GitHub Watchers](https://img.shields.io/github/watchers/mahankal/cakephp-plugin_manager?style=social)](https://github.com/mahankal/cakephp-plugin_manager/watchers)
 
 <!-- packagist details
-[![Latest Stable Version](https://poser.pugx.org/{git-user}/{git-repo}/v/stable)](https://packagist.org/packages/{git-user}/{git-repo})
-[![Total Downloads](https://poser.pugx.org/{git-user}/{git-repo}/downloads)](https://packagist.org/packages/{git-user}/{git-repo})
+[![Latest Stable Version](https://poser.pugx.org/mahankal/cakephp-plugin_manager/v/stable)](https://packagist.org/packages/mahankal/cakephp-plugin_manager)
+[![Total Downloads](https://poser.pugx.org/mahankal/cakephp-plugin_manager/downloads)](https://packagist.org/packages/mahankal/cakephp-plugin_manager)
 -->
 
 Package description
@@ -44,7 +43,7 @@ You can install this plugin directly from GitHub using Composer:
    "repositories": [
        {
            "type": "vcs",
-           "url": "https://github.com/{git-user}/{git-repo}"
+           "url": "https://github.com/mahankal/cakephp-plugin_manager"
        }
    ]
    ```
@@ -52,25 +51,8 @@ You can install this plugin directly from GitHub using Composer:
 1. Require the plugin via Composer:
 
    ```bash
-   composer require mahankals/{git-repo}:dev-{git-branch}
+   composer require mahankals/cakephp-plugin_manager:dev-main
    ```
-
-1. Load the plugin
-
-   **Method 1: from terminal**
-
-   ```bash
-   bin/cake plugin load {Package-Title}
-   ```
-
-   **Method 2: load in `Application.php`, bootstrap method**
-
-   ```bash
-   $this->addPlugin('{Package-Title}');
-   ```
-
-## Other Details
-
 
 ## Contributing
 
@@ -78,7 +60,7 @@ Contributions, issues, and feature requests are welcome!
 
 ## Author
 
-[{author}]({author-site})
+[Atul Mahankal](https://atulmahankal.github.io/atulmahankal/)
 
 ## License
 
