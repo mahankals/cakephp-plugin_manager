@@ -1,62 +1,97 @@
-<!--
-/** replace bellow details */
-mahankal
-cakephp-plugin_manager
-main
-PluginManager
-Atul Mahankal
-https://atulmahankal.github.io/atulmahankal/
-atulmahankal@gmail.com
--->
+# PluginManager for CakePHP 5
 
-# PluginManager : Plugin for CakePHP
-
+[![CakePHP 5](https://img.shields.io/badge/CakePHP-5.x-red.svg)](https://cakephp.org)
+[![PHP 8.1+](https://img.shields.io/badge/PHP-8.1%2B-blue.svg)](https://php.net)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Latest Version](https://img.shields.io/github/v/tag/mahankal/cakephp-plugin_manager?label=Git%20Latest)](https://github.com/mahankal/cakephp-plugin_manager)
-[![Stable Version](https://img.shields.io/github/v/release/mahankal/cakephp-plugin_manager?label=Git%20Stable&sort=semver)](https://github.com/mahankal/cakephp-plugin_manager/releases)
-[![Total Downloads](https://img.shields.io/github/downloads/mahankal/cakephp-plugin_manager/total?label=Git%20Downloads)](https://github.com/mahankal/cakephp-plugin_manager/releases)
 
-[![GitHub Stars](https://img.shields.io/github/stars/mahankal/cakephp-plugin_manager?style=social)](https://github.com/mahankal/cakephp-plugin_manager/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/mahankal/cakephp-plugin_manager?style=social)](https://github.com/mahankal/cakephp-plugin_manager/network/members)
-[![GitHub Watchers](https://img.shields.io/github/watchers/mahankal/cakephp-plugin_manager?style=social)](https://github.com/mahankal/cakephp-plugin_manager/watchers)
-
-<!-- packagist details
-[![Latest Stable Version](https://poser.pugx.org/mahankal/cakephp-plugin_manager/v/stable)](https://packagist.org/packages/mahankal/cakephp-plugin_manager)
-[![Total Downloads](https://poser.pugx.org/mahankal/cakephp-plugin_manager/downloads)](https://packagist.org/packages/mahankal/cakephp-plugin_manager)
--->
-
-Package description
-
----
+A secure plugin manager for CakePHP 5 applications. Discover, enable, disable, and configure plugins through a web dashboard or JSON API.
 
 ## Features
 
-- feature 1
+- Plugin discovery from `plugins/` directory
+- Enable/disable plugins with persistent state
+- Plugin configuration management
+- Web dashboard interface
+- RESTful JSON API
+- Security validation for plugin names
+- Works with or without CakeSPA
+
+## Requirements
+
+| Requirement | Version |
+|-------------|---------|
+| PHP | >= 8.1 |
+| CakePHP | ^5.0 |
+
+**No additional dependencies required.**
 
 ## Installation
 
-You can install this plugin directly from GitHub using Composer:
+1. Copy the plugin to `plugins/plugin_manager`
 
-1. Add the GitHub repository to your app's `composer.json`:
+2. Add autoload entry to `composer.json`:
 
-   ```json
-   "repositories": [
-       {
-           "type": "vcs",
-           "url": "https://github.com/mahankal/cakephp-plugin_manager"
-       }
-   ]
-   ```
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "PluginManager\\": "plugins/plugin_manager/src/"
+        }
+    }
+}
+```
 
-1. Require the plugin via Composer:
+3. Regenerate autoloader:
 
-   ```bash
-   composer require mahankals/cakephp-plugin_manager:dev-main
-   ```
+```bash
+composer dump-autoload
+```
+
+4. Load the plugin in `config/plugins.php`:
+
+```php
+return [
+    'PluginManager' => [],
+];
+```
+
+## How It Works
+
+1. **Discovery**: Scans `plugins/` directory for available plugins
+2. **Registry**: Maintains plugin state in cache and `config/plugins.local.php`
+3. **Dashboard**: Web interface at `/plugin-manager` for management
+4. **API**: JSON endpoints for programmatic access
+
+### Web Dashboard
+
+Access at: `https://your-app.local/plugin-manager`
+
+### JSON API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/plugin-manager/list.json` | List all plugins |
+| GET | `/plugin-manager/status/{name}.json` | Get plugin status |
+| POST | `/plugin-manager/enable/{name}` | Enable plugin |
+| POST | `/plugin-manager/disable/{name}` | Disable plugin |
+| POST | `/plugin-manager/refresh` | Refresh cache |
+| GET | `/plugin-manager/config/{name}` | Plugin configuration |
+
+## Documentation
+
+See the [docs](docs/) folder for detailed documentation:
+
+- [Features](docs/features/) - Feature documentation
+- [Development](docs/development/) - Implementation details
+- [Bugfixes](docs/bugfixes/) - Bug fix history
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome!
+1. Fork the repository
+2. Create a feature branch
+3. Write tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
 
 ## Author
 
@@ -64,4 +99,4 @@ Contributions, issues, and feature requests are welcome!
 
 ## License
 
-This library is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+MIT License - see [LICENSE](LICENSE) file.
