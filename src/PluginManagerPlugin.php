@@ -10,7 +10,9 @@ use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\RouteBuilder;
+use PluginManager\Service\MarketplaceService;
 use PluginManager\Service\PluginDiscoveryService;
+use PluginManager\Service\PluginInstallerService;
 use PluginManager\Service\PluginLoaderService;
 use PluginManager\Service\PluginRegistryService;
 
@@ -213,5 +215,11 @@ class PluginManagerPlugin extends BasePlugin
         $container->addShared(PluginLoaderService::class)
             ->addArgument(PluginDiscoveryService::class)
             ->addArgument(PluginRegistryService::class);
+
+        // Register marketplace services
+        $container->addShared(MarketplaceService::class);
+        $container->addShared(PluginInstallerService::class)
+            ->addArgument(PluginDiscoveryService::class)
+            ->addArgument(PluginLoaderService::class);
     }
 }

@@ -19,6 +19,10 @@ $routes->plugin(
         // Enable JSON extension for API access
         $builder->setExtensions(['json']);
 
+        // =====================================================================
+        // Plugin Management Routes
+        // =====================================================================
+
         $builder->connect(
             '/',
             ['controller' => 'Plugins', 'action' => 'index']
@@ -55,6 +59,63 @@ $routes->plugin(
         $builder->connect(
             '/config/{name}/save',
             ['controller' => 'Plugins', 'action' => 'saveConfig'],
+            ['pass' => ['name'], '_method' => 'POST']
+        );
+
+        // =====================================================================
+        // Marketplace Routes
+        // =====================================================================
+
+        // Browse marketplace
+        $builder->connect(
+            '/marketplace',
+            ['controller' => 'Plugins', 'action' => 'marketplace']
+        );
+
+        // Search marketplace (JSON API)
+        $builder->connect(
+            '/marketplace/search',
+            ['controller' => 'Plugins', 'action' => 'marketplaceSearch']
+        );
+
+        // Refresh marketplace cache
+        $builder->connect(
+            '/marketplace/refresh',
+            ['controller' => 'Plugins', 'action' => 'refreshMarketplace'],
+            ['_method' => 'POST']
+        );
+
+        // Get plugin details from marketplace
+        $builder->connect(
+            '/marketplace/plugin/{package}',
+            ['controller' => 'Plugins', 'action' => 'marketplaceDetails'],
+            ['pass' => ['package']]
+        );
+
+        // Check for updates
+        $builder->connect(
+            '/check-updates',
+            ['controller' => 'Plugins', 'action' => 'checkUpdates']
+        );
+
+        // Install plugin from marketplace
+        $builder->connect(
+            '/install/{package}',
+            ['controller' => 'Plugins', 'action' => 'installPlugin'],
+            ['pass' => ['package'], '_method' => 'POST']
+        );
+
+        // Update plugin
+        $builder->connect(
+            '/update/{name}',
+            ['controller' => 'Plugins', 'action' => 'updatePlugin'],
+            ['pass' => ['name'], '_method' => 'POST']
+        );
+
+        // Uninstall plugin
+        $builder->connect(
+            '/uninstall/{name}',
+            ['controller' => 'Plugins', 'action' => 'uninstallPlugin'],
             ['pass' => ['name'], '_method' => 'POST']
         );
     }

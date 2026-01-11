@@ -1,0 +1,254 @@
+{
+    "plugins": [
+        {
+            "name": "mahankals/cakephp-spa",
+            "displayName": "CakePHP SPA",
+            "description": "Single Page Application support for CakePHP. Enables AJAX navigation, partial page updates, and smooth transitions.",
+            "version": "1.0.0",
+            "author": {
+                "name": "Mahankal Solutions",
+                "email": "plugins@mahankals.com",
+                "url": "https://github.com/mahankals"
+            },
+            "category": "core",
+            "tags": ["spa", "ajax", "navigation", "frontend"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/mahankals/cakephp-spa",
+            "documentation": "https://github.com/mahankals/cakephp-spa#readme",
+            "downloads": 1250,
+            "rating": 4.8,
+            "ratingCount": 23,
+            "createdAt": "2025-06-15T10:00:00Z",
+            "updatedAt": "2025-12-01T14:30:00Z"
+        },
+        {
+            "name": "mahankals/cakephp-plugin-dbconfig",
+            "displayName": "Database Configuration",
+            "description": "Database-driven configuration management for CakePHP. Store and manage application settings in the database.",
+            "version": "1.0.0",
+            "author": {
+                "name": "Mahankal Solutions",
+                "email": "plugins@mahankals.com",
+                "url": "https://github.com/mahankals"
+            },
+            "category": "core",
+            "tags": ["config", "database", "settings", "admin"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/mahankals/cakephp-plugin-dbconfig",
+            "documentation": "https://github.com/mahankals/cakephp-plugin-dbconfig#readme",
+            "downloads": 980,
+            "rating": 4.6,
+            "ratingCount": 15,
+            "createdAt": "2025-05-20T09:00:00Z",
+            "updatedAt": "2025-11-15T11:00:00Z"
+        },
+        {
+            "name": "mahankals/plugin-manager",
+            "displayName": "Plugin Manager",
+            "description": "Runtime plugin management and installation for CakePHP. Enable, disable, and configure plugins without code changes.",
+            "version": "1.1.0",
+            "author": {
+                "name": "Mahankal Solutions",
+                "email": "plugins@mahankals.com",
+                "url": "https://github.com/mahankals"
+            },
+            "category": "core",
+            "tags": ["plugins", "admin", "management", "runtime"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/mahankals/plugin-manager",
+            "documentation": "https://github.com/mahankals/plugin-manager#readme",
+            "downloads": 1100,
+            "rating": 4.7,
+            "ratingCount": 19,
+            "createdAt": "2025-04-10T08:00:00Z",
+            "updatedAt": "2026-01-10T16:00:00Z"
+        },
+        {
+            "name": "mahankals/cakephp-vite-helper",
+            "displayName": "Vite Integration",
+            "description": "Vite.js asset bundling integration for CakePHP. Hot module replacement in development, optimized builds in production.",
+            "version": "1.0.0",
+            "author": {
+                "name": "Mahankal Solutions",
+                "email": "plugins@mahankals.com",
+                "url": "https://github.com/mahankals"
+            },
+            "category": "frontend",
+            "tags": ["vite", "assets", "bundler", "hmr", "frontend"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/mahankals/cakephp-vite-helper",
+            "documentation": "https://github.com/mahankals/cakephp-vite-helper#readme",
+            "downloads": 890,
+            "rating": 4.9,
+            "ratingCount": 12,
+            "createdAt": "2025-07-01T12:00:00Z",
+            "updatedAt": "2025-12-20T10:00:00Z"
+        },
+        {
+            "name": "mahankals/cakephp-queueworker",
+            "displayName": "Queue Worker",
+            "description": "Background job queue worker system for CakePHP. Process jobs asynchronously with configurable workers.",
+            "version": "1.0.0",
+            "author": {
+                "name": "Mahankal Solutions",
+                "email": "plugins@mahankals.com",
+                "url": "https://github.com/mahankals"
+            },
+            "category": "utils",
+            "tags": ["queue", "jobs", "background", "worker", "async"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/mahankals/cakephp-queueworker",
+            "documentation": "https://github.com/mahankals/cakephp-queueworker#readme",
+            "downloads": 760,
+            "rating": 4.5,
+            "ratingCount": 8,
+            "createdAt": "2025-08-15T14:00:00Z",
+            "updatedAt": "2026-01-05T09:00:00Z"
+        },
+        {
+            "name": "cakephp/authentication",
+            "displayName": "CakePHP Authentication",
+            "description": "Official authentication plugin for CakePHP. Supports multiple authenticators including session, token, and OAuth.",
+            "version": "3.1.0",
+            "author": {
+                "name": "CakePHP Team",
+                "email": "cakephp@cakephp.org",
+                "url": "https://cakephp.org"
+            },
+            "category": "auth",
+            "tags": ["authentication", "login", "session", "oauth", "jwt"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/cakephp/authentication",
+            "documentation": "https://book.cakephp.org/authentication/3/en/index.html",
+            "downloads": 25000,
+            "rating": 4.9,
+            "ratingCount": 156,
+            "createdAt": "2020-01-01T00:00:00Z",
+            "updatedAt": "2025-10-15T12:00:00Z"
+        },
+        {
+            "name": "cakephp/authorization",
+            "displayName": "CakePHP Authorization",
+            "description": "Official authorization plugin for CakePHP. Role-based access control with policies and middleware.",
+            "version": "3.1.0",
+            "author": {
+                "name": "CakePHP Team",
+                "email": "cakephp@cakephp.org",
+                "url": "https://cakephp.org"
+            },
+            "category": "auth",
+            "tags": ["authorization", "rbac", "permissions", "policies", "acl"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/cakephp/authorization",
+            "documentation": "https://book.cakephp.org/authorization/3/en/index.html",
+            "downloads": 18000,
+            "rating": 4.8,
+            "ratingCount": 98,
+            "createdAt": "2020-01-01T00:00:00Z",
+            "updatedAt": "2025-10-15T12:00:00Z"
+        },
+        {
+            "name": "friendsofcake/crud",
+            "displayName": "CRUD Plugin",
+            "description": "Rapid application development plugin. Auto-generates CRUD actions with customizable events and formatting.",
+            "version": "7.0.0",
+            "author": {
+                "name": "Friends of Cake",
+                "email": "hello@friendsofcake.com",
+                "url": "https://friendsofcake.com"
+            },
+            "category": "utils",
+            "tags": ["crud", "scaffolding", "rapid", "rest", "api"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/FriendsOfCake/crud",
+            "documentation": "https://crud.readthedocs.io/",
+            "downloads": 22000,
+            "rating": 4.7,
+            "ratingCount": 134,
+            "createdAt": "2015-01-01T00:00:00Z",
+            "updatedAt": "2025-09-20T08:00:00Z"
+        },
+        {
+            "name": "friendsofcake/search",
+            "displayName": "Search Plugin",
+            "description": "Powerful search and filtering plugin for CakePHP. Build complex search forms with ease.",
+            "version": "7.0.0",
+            "author": {
+                "name": "Friends of Cake",
+                "email": "hello@friendsofcake.com",
+                "url": "https://friendsofcake.com"
+            },
+            "category": "utils",
+            "tags": ["search", "filter", "query", "forms"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/FriendsOfCake/search",
+            "documentation": "https://github.com/FriendsOfCake/search#readme",
+            "downloads": 15000,
+            "rating": 4.6,
+            "ratingCount": 89,
+            "createdAt": "2016-03-01T00:00:00Z",
+            "updatedAt": "2025-08-10T14:00:00Z"
+        },
+        {
+            "name": "dereuromark/cakephp-queue",
+            "displayName": "Queue Plugin",
+            "description": "Simple database-driven job queue for CakePHP. No external dependencies required.",
+            "version": "8.0.0",
+            "author": {
+                "name": "Mark Scherer",
+                "email": "euromark@web.de",
+                "url": "https://www.dereuromark.de"
+            },
+            "category": "utils",
+            "tags": ["queue", "jobs", "database", "worker", "background"],
+            "requirements": {
+                "php": ">=8.1",
+                "cakephp/cakephp": "^5.0"
+            },
+            "homepage": "https://github.com/dereuromark/cakephp-queue",
+            "documentation": "https://github.com/dereuromark/cakephp-queue#readme",
+            "downloads": 12000,
+            "rating": 4.5,
+            "ratingCount": 67,
+            "createdAt": "2017-05-01T00:00:00Z",
+            "updatedAt": "2025-11-01T16:00:00Z"
+        }
+    ],
+    "categories": [
+        "core",
+        "auth",
+        "utils",
+        "frontend",
+        "reports",
+        "crm",
+        "ecommerce",
+        "api"
+    ]
+}

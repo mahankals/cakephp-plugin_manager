@@ -7,6 +7,9 @@ namespace PluginManager\Controller;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Http\Response;
+use InvalidArgumentException;
+use PluginManager\Service\MarketplaceService;
+use PluginManager\Service\PluginInstallerService;
 use PluginManager\Service\PluginLoaderService;
 use RuntimeException;
 
@@ -23,6 +26,16 @@ class PluginsController extends AppController
     private PluginLoaderService $pluginLoader;
 
     /**
+     * Marketplace service.
+     */
+    private MarketplaceService $marketplace;
+
+    /**
+     * Plugin installer service.
+     */
+    private PluginInstallerService $installer;
+
+    /**
      * Initialize controller.
      *
      * @return void
@@ -31,8 +44,9 @@ class PluginsController extends AppController
     {
         parent::initialize();
 
-        // Get service from container
+        // Get services from container
         $container = $this->getRequest()->getAttribute('container');
+
         if ($container !== null && $container->has(PluginLoaderService::class)) {
             $this->pluginLoader = $container->get(PluginLoaderService::class);
         } else {
@@ -40,6 +54,20 @@ class PluginsController extends AppController
             $discovery = new \PluginManager\Service\PluginDiscoveryService();
             $registry = new \PluginManager\Service\PluginRegistryService();
             $this->pluginLoader = new PluginLoaderService($discovery, $registry);
+        }
+
+        if ($container !== null && $container->has(MarketplaceService::class)) {
+            $this->marketplace = $container->get(MarketplaceService::class);
+        } else {
+            $this->marketplace = new MarketplaceService();
+        }
+
+        if ($container !== null && $container->has(PluginInstallerService::class)) {
+            $this->installer = $container->get(PluginInstallerService::class);
+        } else {
+            $discovery = $container?->get(\PluginManager\Service\PluginDiscoveryService::class)
+                ?? new \PluginManager\Service\PluginDiscoveryService();
+            $this->installer = new PluginInstallerService($discovery, $this->pluginLoader);
         }
     }
 
@@ -459,5 +487,382 @@ class PluginsController extends AppController
             // Log error but don't fail
             return false;
         }
+    }
+
+    // =========================================================================
+    // MARKETPLACE ACTIONS
+    // =========================================================================
+
+    /**
+     * Browse the plugin marketplace.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function marketplace(): ?Response
+    {
+        $catalog = $this->marketplace->getCatalog();
+        $categories = $this->marketplace->getCategories();
+        $installedPlugins = $this->pluginLoader->listPlugins();
+
+        // Get installed package versions
+        $installedVersions = $this->installer->getInstalledPackages();
+
+        // Mark plugins as installed/updatable
+        $plugins = $catalog['plugins'] ?? [];
+        foreach ($plugins as &$plugin) {
+            $packageName = $plugin['name'] ?? '';
+            $plugin['installed'] = isset($installedVersions[$packageName]);
+            $plugin['installedVersion'] = $installedVersions[$packageName] ?? null;
+
+            // Check if update is available
+            if ($plugin['installed'] && isset($plugin['version'])) {
+                $plugin['updateAvailable'] = version_compare(
+                    $plugin['version'],
+                    $plugin['installedVersion'] ?? '0.0.0',
+                    '>'
+                );
+            } else {
+                $plugin['updateAvailable'] = false;
+            }
+        }
+
+        $this->set(compact('plugins', 'categories', 'installedPlugins'));
+
+        if ($this->isJsonRequest()) {
+            $this->viewBuilder()->setClassName('Json');
+            $this->viewBuilder()->setOption('serialize', ['plugins', 'categories']);
+        }
+
+        return null;
+    }
+
+    /**
+     * Search the marketplace (JSON API).
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function marketplaceSearch(): ?Response
+    {
+        $query = $this->request->getQuery('q', '');
+        $category = $this->request->getQuery('category');
+        $sort = $this->request->getQuery('sort', 'downloads');
+
+        $filters = [];
+        if ($category) {
+            $filters['category'] = $category;
+        }
+        if ($sort) {
+            $filters['sort'] = $sort;
+        }
+
+        $results = $this->marketplace->search((string)$query, $filters);
+
+        // Get installed versions to mark results
+        $installedVersions = $this->installer->getInstalledPackages();
+
+        foreach ($results as &$plugin) {
+            $packageName = $plugin['name'] ?? '';
+            $plugin['installed'] = isset($installedVersions[$packageName]);
+            $plugin['installedVersion'] = $installedVersions[$packageName] ?? null;
+        }
+
+        $this->set([
+            'success' => true,
+            'plugins' => $results,
+            'count' => count($results),
+            'query' => $query,
+        ]);
+        $this->viewBuilder()->setClassName('Json');
+        $this->viewBuilder()->setOption('serialize', ['success', 'plugins', 'count', 'query']);
+
+        return null;
+    }
+
+    /**
+     * Get details of a specific plugin from marketplace.
+     *
+     * @param string $package URL-encoded package name
+     * @return \Cake\Http\Response|null
+     */
+    public function marketplaceDetails(string $package): ?Response
+    {
+        $packageName = urldecode($package);
+
+        $details = $this->marketplace->getPluginDetails($packageName);
+
+        if ($details === null) {
+            $this->set([
+                'success' => false,
+                'error' => 'Plugin not found in marketplace',
+            ]);
+            $this->viewBuilder()->setClassName('Json');
+            $this->viewBuilder()->setOption('serialize', ['success', 'error']);
+            $this->response = $this->response->withStatus(404);
+
+            return null;
+        }
+
+        // Add installation status
+        $installedVersion = $this->installer->getInstalledVersion($packageName);
+        $details['installed'] = $installedVersion !== null;
+        $details['installedVersion'] = $installedVersion;
+
+        // Check for update
+        if ($details['installed'] && isset($details['version'])) {
+            $details['updateAvailable'] = version_compare(
+                $details['version'],
+                $installedVersion ?? '0.0.0',
+                '>'
+            );
+        } else {
+            $details['updateAvailable'] = false;
+        }
+
+        // Get version history
+        $details['versions'] = $this->marketplace->getVersions($packageName);
+
+        $this->set([
+            'success' => true,
+            'plugin' => $details,
+        ]);
+
+        if ($this->isJsonRequest()) {
+            $this->viewBuilder()->setClassName('Json');
+            $this->viewBuilder()->setOption('serialize', ['success', 'plugin']);
+        } else {
+            $this->set('pluginDetails', $details);
+        }
+
+        return null;
+    }
+
+    /**
+     * Install a plugin from the marketplace.
+     *
+     * @param string $package URL-encoded package name
+     * @return \Cake\Http\Response|null
+     */
+    public function installPlugin(string $package): ?Response
+    {
+        $this->request->allowMethod(['POST']);
+
+        $packageName = urldecode($package);
+        $version = $this->request->getData('version');
+
+        try {
+            // Check if Composer is available
+            if (!$this->installer->isComposerAvailable()) {
+                throw new RuntimeException(
+                    'Composer is not available. Please install Composer or configure the path.'
+                );
+            }
+
+            $result = $this->installer->install($packageName, $version);
+
+            if (!$this->isJsonRequest()) {
+                if ($result['success']) {
+                    $this->Flash->success("Plugin '{$packageName}' has been installed successfully.");
+                } else {
+                    $this->Flash->error("Failed to install '{$packageName}': " . ($result['error'] ?? 'Unknown error'));
+                }
+                return $this->redirect(['action' => 'marketplace']);
+            }
+
+            $this->set([
+                'success' => $result['success'],
+                'message' => $result['success']
+                    ? "Plugin '{$packageName}' has been installed successfully."
+                    : null,
+                'error' => $result['error'] ?? null,
+                'output' => $result['output'] ?? null,
+            ]);
+        } catch (InvalidArgumentException $e) {
+            if (!$this->isJsonRequest()) {
+                $this->Flash->error($e->getMessage());
+                return $this->redirect(['action' => 'marketplace']);
+            }
+
+            $this->set([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+            $this->response = $this->response->withStatus(400);
+        } catch (RuntimeException $e) {
+            if (!$this->isJsonRequest()) {
+                $this->Flash->error($e->getMessage());
+                return $this->redirect(['action' => 'marketplace']);
+            }
+
+            $this->set([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+            $this->response = $this->response->withStatus(500);
+        }
+
+        $this->viewBuilder()->setClassName('Json');
+        $this->viewBuilder()->setOption('serialize', ['success', 'message', 'error', 'output']);
+
+        return null;
+    }
+
+    /**
+     * Update a plugin to the latest version.
+     *
+     * @param string $name URL-encoded plugin/package name
+     * @return \Cake\Http\Response|null
+     */
+    public function updatePlugin(string $name): ?Response
+    {
+        $this->request->allowMethod(['POST']);
+
+        $packageName = urldecode($name);
+
+        try {
+            if (!$this->installer->isComposerAvailable()) {
+                throw new RuntimeException('Composer is not available.');
+            }
+
+            $result = $this->installer->update($packageName);
+
+            if (!$this->isJsonRequest()) {
+                if ($result['success']) {
+                    $this->Flash->success("Plugin '{$packageName}' has been updated successfully.");
+                } else {
+                    $this->Flash->error("Failed to update '{$packageName}': " . ($result['error'] ?? 'Unknown error'));
+                }
+                return $this->redirect(['action' => 'index']);
+            }
+
+            $this->set([
+                'success' => $result['success'],
+                'message' => $result['success']
+                    ? "Plugin '{$packageName}' has been updated successfully."
+                    : null,
+                'error' => $result['error'] ?? null,
+                'output' => $result['output'] ?? null,
+            ]);
+        } catch (InvalidArgumentException | RuntimeException $e) {
+            if (!$this->isJsonRequest()) {
+                $this->Flash->error($e->getMessage());
+                return $this->redirect(['action' => 'index']);
+            }
+
+            $this->set([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+            $this->response = $this->response->withStatus(400);
+        }
+
+        $this->viewBuilder()->setClassName('Json');
+        $this->viewBuilder()->setOption('serialize', ['success', 'message', 'error', 'output']);
+
+        return null;
+    }
+
+    /**
+     * Uninstall a plugin.
+     *
+     * @param string $name URL-encoded plugin/package name
+     * @return \Cake\Http\Response|null
+     */
+    public function uninstallPlugin(string $name): ?Response
+    {
+        $this->request->allowMethod(['POST']);
+
+        $packageName = urldecode($name);
+        $force = (bool)$this->request->getData('force', false);
+
+        try {
+            if (!$this->installer->isComposerAvailable()) {
+                throw new RuntimeException('Composer is not available.');
+            }
+
+            $result = $this->installer->remove($packageName, $force);
+
+            if (!$this->isJsonRequest()) {
+                if ($result['success']) {
+                    $this->Flash->success("Plugin '{$packageName}' has been uninstalled successfully.");
+                } else {
+                    $this->Flash->error("Failed to uninstall '{$packageName}': " . ($result['error'] ?? 'Unknown error'));
+                }
+                return $this->redirect(['action' => 'index']);
+            }
+
+            $this->set([
+                'success' => $result['success'],
+                'message' => $result['success']
+                    ? "Plugin '{$packageName}' has been uninstalled successfully."
+                    : null,
+                'error' => $result['error'] ?? null,
+                'output' => $result['output'] ?? null,
+            ]);
+        } catch (InvalidArgumentException | RuntimeException $e) {
+            if (!$this->isJsonRequest()) {
+                $this->Flash->error($e->getMessage());
+                return $this->redirect(['action' => 'index']);
+            }
+
+            $this->set([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+            $this->response = $this->response->withStatus(400);
+        }
+
+        $this->viewBuilder()->setClassName('Json');
+        $this->viewBuilder()->setOption('serialize', ['success', 'message', 'error', 'output']);
+
+        return null;
+    }
+
+    /**
+     * Check for available updates for installed plugins.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function checkUpdates(): ?Response
+    {
+        $installedPackages = $this->installer->getInstalledPackages();
+        $updates = $this->marketplace->checkUpdates($installedPackages);
+
+        $this->set([
+            'success' => true,
+            'updates' => $updates,
+            'count' => count($updates),
+        ]);
+        $this->viewBuilder()->setClassName('Json');
+        $this->viewBuilder()->setOption('serialize', ['success', 'updates', 'count']);
+
+        return null;
+    }
+
+    /**
+     * Refresh marketplace cache.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function refreshMarketplace(): ?Response
+    {
+        $this->request->allowMethod(['POST']);
+
+        $this->marketplace->clearCache();
+        $catalog = $this->marketplace->getCatalog(true);
+
+        if (!$this->isJsonRequest()) {
+            $this->Flash->success('Marketplace cache has been refreshed.');
+            return $this->redirect(['action' => 'marketplace']);
+        }
+
+        $this->set([
+            'success' => true,
+            'message' => 'Marketplace cache has been refreshed.',
+            'pluginCount' => count($catalog['plugins'] ?? []),
+        ]);
+        $this->viewBuilder()->setClassName('Json');
+        $this->viewBuilder()->setOption('serialize', ['success', 'message', 'pluginCount']);
+
+        return null;
     }
 }
